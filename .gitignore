@@ -1,0 +1,7 @@
+.env
+data/
+__pycache__/
+*.pyc
+run_update.bat
+setup_scheduler.bat
+update_log.txt
