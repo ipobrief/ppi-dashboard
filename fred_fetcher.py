@@ -16,6 +16,13 @@ os.makedirs(DATA_DIR, exist_ok=True)
 
 def get_fred():
     api_key = os.getenv("FRED_API_KEY")
+    # Streamlit Cloud secrets support
+    if not api_key or api_key == "your_fred_api_key_here":
+        try:
+            import streamlit as st
+            api_key = st.secrets.get("FRED_API_KEY", None)
+        except Exception:
+            pass
     if not api_key or api_key == "your_fred_api_key_here":
         raise ValueError("FRED_API_KEY가 설정되지 않았습니다. .env 파일에 API 키를 입력하세요.")
     return Fred(api_key=api_key)
