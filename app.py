@@ -461,10 +461,32 @@ def main():
         )
         st.plotly_chart(fig, use_container_width=True)
 
-        st.dataframe(
-            cat_metrics.style.format({"avg_yoy": "{:+.1f}%", "avg_mom": "{:+.1f}%", "avg_momentum": "{:+.1f}%"}),
-            use_container_width=True,
-        )
+        st.markdown("""
+        <style>
+        .cat-table { width: 100%; border-collapse: collapse; }
+        .cat-table th { text-align: left; padding: 8px 12px; border-bottom: 1px solid #333; color: #888; font-size: 13px; }
+        .cat-table td { padding: 8px 12px; border-bottom: 1px solid #222; font-size: 14px; }
+        .cat-table tr:hover { background: #1a1a2e; }
+        </style>
+        """, unsafe_allow_html=True)
+
+        header_cols = st.columns([3, 1.5, 1.5, 1.5, 1])
+        header_cols[0].markdown("**category**")
+        header_cols[1].markdown("**avg_yoy**")
+        header_cols[2].markdown("**avg_mom**")
+        header_cols[3].markdown("**avg_momentum**")
+        header_cols[4].markdown("**count**")
+
+        for i, row in cat_metrics.iterrows():
+            cols = st.columns([3, 1.5, 1.5, 1.5, 1])
+            cols[0].markdown(row["category"])
+            cols[1].markdown(f"{row['avg_yoy']:+.1f}%")
+            cols[2].markdown(f"{row['avg_mom']:+.1f}%")
+            cols[3].markdown(f"{row['avg_momentum']:+.1f}%")
+            if cols[4].button(f"{row['count']}", key=f"cat_count_{i}", use_container_width=True):
+                st.query_params["cat"] = row["category"]
+                st.query_params["tab"] = "signals"
+                st.rerun()
 
 
 if __name__ == "__main__":
